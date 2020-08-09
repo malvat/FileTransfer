@@ -29,31 +29,47 @@ public class Client {
 		} catch(IOException io) {
 			System.out.println(io + "io exception");
 		}
-		String line = "";
-		getFile(in);
-		putFile("client_files\\file.txt", out);
-//		while(!line.equals("over")) {
-//			try {
-//				line = input.nextLine();
-//				System.out.println("you said: " + line);
-//				out.writeUTF(line);
-//			} catch(IOException io) {
-//				System.out.println("could not read line");
-//			}
-//		}
+		String line;
 		try {
-			input.close();
-			out.close();
-			socket.close();
+			while(true) {
+				System.out.println("please enter command: ");
+				line = input.nextLine();
+				out.writeUTF(line);
+				Util.CMD cmd = Util.readCommand(line);
+				String[] splits = line.split(" ");
+				if(cmd == Util.CMD.GET) {
+					// get a file from server
+					line = in.readUTF();
+					System.out.println(line);
+					if(line.equals("file not found")) {
+						continue;
+					}
+					getFile(in, splits[1]);
+					line = in.readUTF();
+					System.out.println(line);
+				} else if(cmd == Util.CMD.PUT) {
+					// send a file to server
+					putFile("client_files\\" + splits[1], out);
+				} else if(cmd == Util.CMD.QUIT) {
+					// quit
+					in.close();
+					out.close();
+					socket.close();
+					System.out.println("closing connection");
+					System.out.println("bye bye");
+					return;
+				} 
+			}			
 		} catch(IOException io) {
-			System.out.println("input error");
+			System.out.println("input or ouput error after entering command");
+			return;
 		}
 	}
 	
-	public void getFile(DataInputStream in) {
+	public void getFile(DataInputStream in, String filename) {
 		try {
 			String line;
-			File file = new File("client_files\\downloaded.txt");
+			File file = new File("client_files\\" + filename);
 			BufferedWriter fileOutput = new BufferedWriter(new FileWriter(file));
 			while(true) { 
 				line = in.readUTF();
@@ -69,22 +85,31 @@ public class Client {
 	}
 	
 	public void putFile(String filename, DataOutputStream out) {
-		System.out.println("putting file");
 		File file; 
 		file = new File(filename);
 		if(file.exists() && !file.isDirectory()) {
-			System.out.println("file found");
 			try {
+				out.writeUTF(filename + " found");
+				System.out.println("uploading file");
 				BufferedReader reader = new BufferedReader(new FileReader(file));				
 				String line;
 				while( (line = reader.readLine()) != null) {
 					out.writeUTF(line);
 				}
 				out.writeUTF("end");
+				out.writeUTF("download complete");
+				System.out.println("upload complete");
 				reader.close();
  			} catch(IOException io) {	
 				System.out.println("cannnot read the file");
 			}
+		} else {
+			try {					
+				out.writeUTF("file not found");
+			} catch(IOException io) {
+				System.out.println("output error");
+			}
+			System.out.println(filename + " not found");
 		}
 	}
 	
