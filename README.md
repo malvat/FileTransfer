@@ -1,40 +1,42 @@
 # Java Socket File Transfer Application
 
-A simple client-server file transfer application built in Java using TCP sockets and multithreading.
+A command-line client-server file transfer application in Java built on TCP sockets and multithreading. Clients can upload and download files over a TCP connection while the server handles multiple concurrent client sessions.
 
-## Features
+## Contents
 
-- Upload files from client to server using `put`
-- Download files from server using `get`
-- Multiple client support using threads
-- Simple command-line interface
-- File transfer over TCP sockets
+- [Overview & Technologies](#overview--technologies)
+- [Project Structure](#project-structure)
+- [Supported Commands](#supported-commands)
+- [Walkthrough & Output Example](#walkthrough--output-example)
 
 ---
 
-## Technologies Used
+## Overview & Technologies
 
-- Java
-- TCP Sockets
-- Multithreading
-- DataInputStream / DataOutputStream
-- File I/O
+### Key Capabilities
+- Upload files from client to server (`put`)
+- Download files from server to client (`get`)
+- Handle multiple concurrent clients using threads
+- Interact through a lightweight command-line interface (CLI) over TCP
 
+### Technologies Used
+- **Language & Networking:** Java, TCP Sockets
+- **Concurrency:** Multithreading
+- **Streams & Storage:** `DataInputStream`, `DataOutputStream`, Java File I/O
 
-### File Descriptions
+---
 
-#### `Client.java`
-Handles client-side communication and file uploads/downloads.
+## Project Structure
 
-#### `Server.java`
-Starts the server, listens for client connections, and creates a new thread for each connected client.
+- **`Client.java`:** Manages client-side socket communication and executes file upload and download transfers.
+- **`Server.java`:** Initializes the server socket, listens for incoming connections, and spawns a dedicated thread per connected client.
+- **`Util.java`:** Parses and validates client commands.
 
-#### `Util.java`
-Parses and validates client commands.
+---
 
 ## Supported Commands
 
-### Download a file from server
+### Download a File (`get`)
 
 ```bash
 get <filename>
@@ -46,9 +48,7 @@ Example:
 get test.txt
 ```
 
----
-
-### Upload a file to server
+### Upload a File (`put`)
 
 ```bash
 put <filename>
@@ -60,30 +60,34 @@ Example:
 put notes.txt
 ```
 
----
-
-### Close the connection
+### Close the Connection (`quit`)
 
 ```bash
 quit
 ```
 
-## Output Example
+---
 
-Files before the transfer
-1. client.txt (exists on the client side)
-2. server.txt (exists on the server side) 
+## Walkthrough & Output Example
+
+### Initial State (Before Transfer)
+1. `client.txt` exists on the client side.
+2. `server.txt` exists on the server side.
+
 <img width="1223" height="708" alt="image" src="https://github.com/user-attachments/assets/32fa5aa6-6c99-4d99-bf91-331dfbf71658" />
 
-### Client Side
+### Client & Server Sessions
+
+#### Client Side
 <img width="720" height="322" alt="image" src="https://github.com/user-attachments/assets/e1443696-b54a-4ef3-8cd6-f106e02d5db2" />
 
-### Server Side
+#### Server Side
 <img width="767" height="228" alt="image" src="https://github.com/user-attachments/assets/2cc61fab-43cf-43a3-a9d3-bbd73758eafc" />
 
-### Result
-executed put client.txt
+### Transfer Results
+
+#### After `put client.txt`
 <img width="1259" height="710" alt="image" src="https://github.com/user-attachments/assets/55fcd93c-079f-41f5-a60f-9784177bf830" />
 
-executed get server.txt
+#### After `get server.txt`
 <img width="1264" height="715" alt="image" src="https://github.com/user-attachments/assets/7fbc0228-c904-4bc6-9d5b-eb12ec815508" />
